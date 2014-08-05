@@ -124,15 +124,15 @@ module GoogleDrive
         # +format+ can be either "xls", "csv", "pdf", "ods", "tsv" or "html".
         # In format such as "csv", only the worksheet specified with +worksheet_index+ is
         # exported.
-        def export_as_string(format, worksheet_index = nil)
-          gid_param = worksheet_index ? "&gid=#{worksheet_index}" : ""
+        def export_as_string(format, worksheet_title = nil)
+          sheet_param = worksheet_title ? "&sheet=#{CGI.escape(worksheet_title)}" : ""
           format_string = "&format=#{format}"
           if self.human_url.match("edit")
-            url = self.human_url.gsub(/edit/, "export") + gid_param + format_string
+            url = self.human_url.gsub(/edit/, "export") + sheet_param + format_string
           else
             url =
               "https://spreadsheets.google.com/feeds/download/spreadsheets/Export" +
-              "?key=#{key}&exportFormat=#{format}#{gid_param}"
+              "?key=#{key}&exportFormat=#{format}#{sheet_param}"
           end
           return @session.request(:get, url, :response_type => :raw)
         end
